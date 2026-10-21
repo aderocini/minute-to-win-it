@@ -7,15 +7,61 @@
 <section id="student" class="hidden"><div class="card"><h2>Log your wins</h2><p>Choose a task you've <b>actually completed</b>, then tap Log it. Your class sees the collective progress—not your identity.</p><label>Anonymous participant code <input id="participant" placeholder="e.g., Raptor27" maxlength="32"></label><p class="muted">Use the same code for every submission. Avoid your real name or student ID.</p><p id="mycount" style="font-weight:700"></p></div><div id="tasks"></div></section>
 <footer class="muted" style="padding:16px 0 30px">Designed for a 30-minute classroom challenge • Demo mode uses only this browser • For shared live mode, connect Supabase and host this page.</footer></main>
 <script>
-const SUPABASE_URL='https://iwswnrfdwgzwzrcdnbdt.supabase.co';
-const SUPABASE_ANON_KEY='sb_publishable_tGI8ic6Bgi7sezIvwE4SMA_K-eavf7t'; 
-const labels=['⚡ Productivity Power-Ups','🚀 Procrastination Busters','🩺 Nursing School Success','💌 Gratitude & Connection','🌿 Wellness & Life Admin'];
+const SUPABASE_URL='https://aderocini.github.io/minute-to-win-it/?view=dashboard&code=NURSING2026';
+const SUPABASE_ANON_KEY='sb_publishable_tGI8ic6Bgi7sezIvwE4SMA_K-eavf7t';
+const labels=['⚡ Winning The Week','🚀 Procrastination Busters','🩺 Nursing School Success','💌 Gratitude & Connection','🌿 Wellness & Life Admin'];
 const groups=[
-['Write down your top three priorities for the next seven days.','Turn one vague goal into a SMART goal.','Identify your most important assignment due this week and write the first action needed.','Put three upcoming deadlines into your calendar.','Break one large assignment into three smaller steps.','Create a 20-minute study plan for a nursing course.','Identify one task you can complete in under five minutes and do it.','Write a two-item plan for what you will do immediately after class.'],
-['Open an assignment you have been avoiding and complete its first step.','Spend two minutes reviewing a topic you have been putting off.','Start an email you have been avoiding and send it if it is ready.','Delete or organize ten unnecessary emails.','Set a reminder for something you keep forgetting.','Identify your biggest distraction and turn off one related notification.','Create a five-minute starting routine for your hardest course.','Identify one reason you procrastinate and write a strategy to overcome it.'],
-['Create three flashcards for an upcoming A&P, chemistry, or nursing exam.','Practice active recall: write five things you remember from your last lecture without looking at notes.','Review one difficult concept and explain it in plain language.','Write three practice questions from a recent lecture.','Identify one topic you need help understanding and formulate a question for your instructor or tutor.','Schedule or plan your next peer tutoring or study-group session.','Organize one folder of nursing course notes.','Identify your next exam and schedule two specific review sessions.'],
-['Send a sincere thank-you message to someone who supported you this week.','Write down three things you are grateful for today.','Compliment a classmate on something specific they have done well.','Send a supportive message to a fellow nursing student.','Write a short thank-you note to a professor, mentor, or tutor.','Identify one person who inspires you and write why.','Write one thing you appreciate about yourself.','Ask a classmate to share one study strategy that works for them.'],
-['Schedule a 15-minute break or personal activity this week.','Take one minute to practice slow, intentional breathing.','Check your weekly schedule and identify one time you can get more sleep.','Write down one healthy meal or snack you can prepare this week.','Organize your phone’s home screen to reduce distractions.','Clean up five unnecessary files or screenshots on your device.','Write a short checklist for tomorrow morning.','Identify one commitment you can simplify or reschedule to protect study time.']];
+  [
+    "Write down your top three priorities for next week.",
+    "Turn one vague goal into a SMART goal.",
+    "Identify your most important assignment due this week and write the first action needed.",
+    "Put three upcoming deadlines into your calendar.",
+    "Break one large assignment into three smaller steps and list on the 168-grid",
+    "Create a 20-minute study plan for a nursing course.",
+    "Identify one task you can complete in under five minutes and do it.",
+    "Write a two-item plan for what you will do immediately after this class."
+  ],
+  [
+    "Open an assignment you have been avoiding and complete its first step.",
+    "Spend two minutes reviewing a topic you have been putting off.",
+    "Open your email and respond to an email you have been avoiding.",
+    "Delete or organize ten unnecessary emails.",
+    "Set a reminder for something you keep forgetting.",
+    "Identify your biggest distraction and turn off one related notification.",
+    "Create a five-minute starting routine for your hardest course.",
+    "Identify one reason you procrastinate and write a strategy to overcome it."
+  ],
+  [
+    "Create three flashcards for an upcoming A&P, chemistry, or nursing exam.",
+    "Practice active recall: write five things you remember from your last lecture without looking at notes.",
+    "Open Navigate Mobile app or go online at navigatestudent.camden.rutgers.edu and sign up to be a Study Buddy for at least one class.",
+    "Write three practice questions from a recent lecture.",
+    "Identify one topic you need help understanding and formulate a question for your instructor or tutor.",
+    "Schedule a peer tutoring appointment.",
+    "Schedule a success coach appointment.",
+    "Identify your next exam and schedule two specific review sessions."
+  ],
+  [
+    "Send a sincere thank-you message to someone who supported you this week.",
+    "Write down three things you are grateful for today.",
+    "Compliment a classmate on something specific they have done well.",
+    "Send a supportive message to a fellow nursing student.",
+    "Write a short thank-you note to a professor, mentor, or tutor.",
+    "Identify one person who inspires you and write why.",
+    "Write one thing you appreciate about yourself.",
+    "Ask a classmate to share one study strategy that works for them."
+  ],
+  [
+    "Schedule a 15-minute break or personal activity this week.",
+    "Take one minute to practice slow, intentional breathing.",
+    "Check your weekly schedule and identify one time you can get more sleep.",
+    "Write down one healthy meal or snack you can prepare this week.",
+    "Organize your phone's home screen to reduce distractions.",
+    "Clean up five unnecessary files or screenshots on your device.",
+    "Write a short checklist for tomorrow morning.",
+    "Identify one commitment you can simplify or reschedule to protect study time."
+  ]
+];
 const tasks=groups.flat();const $=id=>document.getElementById(id);const configured=!!(SUPABASE_URL&&SUPABASE_ANON_KEY);let records=[],channel=null,lastMilestone=0;let code=new URLSearchParams(location.search).get('code')||'NURSING2026';$('code').value=code;$('goal').value=localStorage.getItem('minute-goal')||200;$('participant').value=localStorage.getItem('minute-participant')||'';
 function notice(msg){$('message').textContent=msg;$('message').classList.remove('hidden');setTimeout(()=>$('message').classList.add('hidden'),4500)}
 function view(which){$('dashboard').classList.toggle('hidden',which!=='dashboard');$('student').classList.toggle('hidden',which!=='student');history.replaceState({},'',`?view=${which}&code=${encodeURIComponent(code)}`);render()}
